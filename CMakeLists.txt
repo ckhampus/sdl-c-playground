@@ -9,6 +9,11 @@ set(Game_SRCS
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 
+set(SDL_ROOT "" CACHE PATH "The location of the SDL install prefix (only used if the SDL is not yet found)")
+if(SDL_ROOT)
+   set(CMAKE_PREFIX_PATH ${SDL_ROOT})
+endif()
+
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
 #file(COPY ${CMAKE_SOURCE_DIR}/hello.bmp DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

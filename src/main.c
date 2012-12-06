@@ -9,44 +9,33 @@
 #include <windows.h>
 #endif
 
-char * get_executable_path();
+void get_executable_path(char *path);
 
-int main(int argc, char *argv[]) {
-    SDL_Surface *hello = NULL;
-    SDL_Surface *screen = NULL;
+int main(int argc, const char * argv[]) {
+	char path[1024];
 
-    SDL_Init(SDL_INIT_EVERYTHING);
+	get_executable_path(path);
 
-    screen = SDL_SetVideoMode(640, 480, 32, SDL_SWSURFACE);
+	printf("My SDL App");
 
-    hello = SDL_LoadBMP("hello.bmp");
-
-    SDL_BlitSurface(hello, NULL, screen, NULL);
-
-    SDL_Flip(screen);
-
-    SDL_Delay(2000);
-
-    SDL_FreeSurface(hello);
-
-    SDL_Quit();
-
-    char *path = get_executable_path();
-    
-    printf("%s\n", path);
+    printf("Path: %s\n", path);
 
     return 0;
 }
 
-char * get_executable_path() {
-    char path[1024];
-    uint32_t size = sizeof(path);
+void get_executable_path(char *path) {
+    int size = sizeof(path);
+
 #ifdef TARGET_OS_MAC
     if (_NSGetExecutablePath(path, &size) == 0) {
-        char *res = realpath(path, NULL);
-        return res;
+        path = realpath(path, NULL);
     }
 #endif
-    
-    return NULL;
+
+#ifdef _WIN32
+    HMODULE hModule = GetModuleHandle(NULL);
+    if (hModule != NULL) {
+        GetModuleFileName(hModule, path, (sizeof(path)));
+    }
+#endif
 }
